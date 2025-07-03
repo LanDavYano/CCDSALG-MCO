@@ -9,7 +9,7 @@ int getNextToken(const char* input, int startPos, str256 token){
     int tokenIndex = 0;
     
     while (input[pos] == ' ' || input[pos] == '\t') {
-        pos++;
+        pos++; //I think this is not needed since nakalagay sa specs na valid yung input string without any whitespaces or whatnot
     }
     
     if (input[pos] == '\0') {
@@ -88,6 +88,7 @@ bool isOperator(str256 token){
     }
     return false;
 }
+
 bool isOperand(str256 token)
 {
     return (token[0] >= '0' && token[0] <= '9');
@@ -144,8 +145,19 @@ bool isLeftAssociative(str256 operator) {
     return true;
 }
 
-bool shouldPop(){
+bool shouldPop(str256 oprtrFrmStck, str256 crntOprtr){
     // Check if top operator has higher or equal precedence to operator in tokens[]
+    int crntOprtrPrecedence = getPrecedence(crntOprtr),
+        oprtrFrmStckPrecedence = getPrecedence(oprtrFrmStck);
+
+    if (oprtrFrmStckPrecedence > crntOprtrPrecedence){
+        return true;
+    }
+    else if (oprtrFrmStckPrecedence == crntOprtrPrecedence && isLeftAssociative(crntOprtr)){
+        return true;
+    }
+
+    return false;
 }
 
 bool readInput(str256 tokens[], int tokenCount){
