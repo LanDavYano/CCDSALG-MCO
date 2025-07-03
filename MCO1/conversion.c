@@ -1,6 +1,5 @@
 #include "conversion.h"
 
-
 const str256 operators[] = {"+", "-", "*", "/", "^", "%", "(", ")", 
     ">", "<", ">=", "<=", "==", "!=", "&&", "||", "!"};
 
@@ -61,7 +60,7 @@ int getNextToken(const char* input, int startPos, str256 token){
     
     token[0] = input[pos];
     token[1] = '\0';
-    return pos + 1;
+    return pos + 1; // Can be removed since it might take the unexpected characters as a valid input and hide the bugs
 }
 
 int tokenizeInput(const char* input, str256 tokens[], int maxTokens){
@@ -128,13 +127,13 @@ int getPrecedence(str256 operator){
     else if (strcmp(operator, "(") == 0 || strcmp(operator, ")") == 0)
     {
         return 6; 
-    }
+    } // can be removed since the open and close parenthesis are just used to signal if it is going to be popped or not
     
     return 0; 
 }
 
 bool hasHigherEqualPriority(str256 op1, str256 op2){
-    return getPrecedence(op1) >= getPrecedence(op2);
+    return getPrecedence(op1) >= getPrecedence(op2); // Di ko ginamit so it can be removed
 }
 
 bool isLeftAssociative(str256 operator) {
@@ -160,18 +159,59 @@ bool shouldPop(str256 oprtrFrmStck, str256 crntOprtr){
     return false;
 }
 
-bool readInput(str256 tokens[], int tokenCount){
+bool readInput(str256 tokens[], int tokenCount, StackOperator *stckOprtrt, Queue *outputQueue){
     int i = 0;
+    str256 top, temp;
+    bool done, innerDone;
+
     while (tokens[i][0] != '\0' && i < tokenCount){
-        if (isOperator(tokens[i])){
-            // Check precedence
-            // Push into stack or enqueue
-        }
-        else if (isOperand(tokens[i])){
+        if (isOperand(tokens[i])){
             // Process operand
-            // Enqueue 
+            // Enqueue
+            enqueue(outputQueue, tokens[i]);
+        }
+        else if (isOperator(tokens[i])){
+            // Check precedence
+            // Push into stack or enqueue 
+            if (strcmp(tokens[i], "(") == 0)
+            {
+                pushOperator(stckOprtrt, tokens[i]);
+            }
+            else if (strcmp(tokens[i], ")") == 0){
+                done = false;
+                while (!StackOperatorEmpty(stckOprtrt) && !done){
+                    topOperator(stckOprtrt, top);
+                    if (strcmp(top, "(") == 0){
+                        popOperator(stckOprtrt, temp);
+                        done = true;
+                    }
+                    else{
+                        popOperator(stckOprtrt, temp);
+                        enqueue(outputQueue, temp);
+                    }
+                }
+            }
+            else{
+                innerDone = false;
+                while (!StackOperatorEmpty(stckOprtrt) && !innerDone){
+                    topOperator(stckOprtrt, top);
+                    if (isOperator(top) && shouldPop(top, tokens[i])){
+                        popOperator(stckOprtrt, temp);
+                        enqueue(outputQueue, temp);
+                    }
+                    else{
+                        innerDone = true;
+                    }
+                }
+                pushOperator(stckOprtrt, tokens[i]);
+            }
         }
         i++;
+    }
+
+    while (!StackOperatorEmpty(stckOprtrt)){
+        popOperator(stckOprtrt, temp);
+        enqueue(outputQueue, temp);
     }
     return true;
 }
