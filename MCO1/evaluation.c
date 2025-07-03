@@ -1,5 +1,4 @@
 
-#include <stdio.h>
 #include "evaluation.h"
 
 int charToInt(char singleDigit)

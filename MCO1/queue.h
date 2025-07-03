@@ -3,12 +3,12 @@
 
 #include <stdbool.h>
 
-#define MAX 256
+#define MAXq 256
 
 typedef char str256[257];
 
 typedef struct QueueType{
-    str256 items[MAX];
+    str256 items[MAXq];
     int head, tail, size; 
 } Queue;
 
