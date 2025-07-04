@@ -200,5 +200,28 @@ bool readInput(str256 tokens[], int tokenCount, StackOperator *stckOprtrt, Queue
         popOperator(stckOprtrt, temp);
         enqueue(outputQueue, temp);
     }
-    return true;
+
+    if (StackOperatorEmpty(stckOprtrt)){
+        return true;
+    }
+
+    return false;
+}
+
+bool runInfixToPostfix(const str256 infixExpression, Queue *postfixResult){
+    str256 tokens[MAX];
+    StackOperator stckOprtrt;
+    int tokenCount = 0;
+
+    createStackOperator(&stckOprtrt);
+    createQueue(postfixResult);
+
+    tokenCount = tokenizeInput(infixExpression, tokens, MAX);
+
+    if (readInput(tokens, tokenCount, &stckOprtrt, postfixResult))
+    {
+        return true;
+    }
+
+    return false;
 }
