@@ -17,7 +17,8 @@ bool hasHigherEqualPriority(str256 op1, str256 op2);
 bool isLeftAssociative(str256 operator);
 int getNextToken(const char* input, int startPos, str256 token);
 int tokenizeInput(const char* input, str256 tokens[], int maxTokens);
-bool readInput(str256 tokens[], int tokenCount);
+bool shouldPop(str256 oprtrFrmStck, str256 crntOprtr);
+bool readInput(str256 tokens[], int tokenCount, StackOperator *stckOprtrt, Queue *outputQueue);
 
 #endif
 

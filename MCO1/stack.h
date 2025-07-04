@@ -4,9 +4,10 @@
 #include <stdbool.h>
 
 #define MAX 128
+typedef char str256[257];
 
 typedef struct StackOperatorType{
-    char items[MAX];
+    str256 items[MAX];
     int top;
 } StackOperator;
 
@@ -16,9 +17,9 @@ typedef struct StackOperandType{
 } StackOperand;
 
 void createStackOperator(StackOperator *stack);
-bool pushOperator(StackOperator *stack, char operator);
-bool popOperator(StackOperator *stack, char *operator);
-bool topOperator(StackOperator *stack, char *operator);
+bool pushOperator(StackOperator *stack, str256 operator);
+bool popOperator(StackOperator *stack, str256 *operator);
+bool topOperator(StackOperator *stack, str256 *operator);
 bool StackOperatorEmpty(StackOperator *stack);
 bool StackOperatorFull(StackOperator *s);
 

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "conversion.h": "c",
+        "stack.h": "c"
+    }
+}

@@ -1,4 +1,3 @@
-
 #include "evaluation.h"
 
 int charToInt(char singleDigit)
