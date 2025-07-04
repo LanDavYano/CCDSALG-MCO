@@ -18,5 +18,6 @@ int getNextToken(const char* input, int startPos, str256 token);
 int tokenizeInput(const char* input, str256 tokens[], int maxTokens);
 bool shouldPop(str256 oprtrFrmStck, str256 crntOprtr);
 bool readInput(str256 tokens[], int tokenCount, StackOperator *stckOprtrt, Queue *outputQueue);
+bool runInfixToPostfix(const str256 infixExpression, Queue *postfixResult);
 
 #endif

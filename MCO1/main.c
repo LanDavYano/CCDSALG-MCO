@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "conversion.c"
+#include "conversion.h"
 
 int main()
 {
