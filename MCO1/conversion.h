@@ -20,4 +20,3 @@ bool shouldPop(str256 oprtrFrmStck, str256 crntOprtr);
 bool readInput(str256 tokens[], int tokenCount, StackOperator *stckOprtrt, Queue *outputQueue);
 
 #endif
-
