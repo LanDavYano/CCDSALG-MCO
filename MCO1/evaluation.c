@@ -25,7 +25,7 @@ int stringToInt(char *multipleDigit)
     return atoi(multipleDigit);
 }
 
-int performOperation(int firstNumber, int secondNumber, char op) 
+int performArithmetic(int firstNumber, int secondNumber, char op) 
 {
     switch (op) 
     {
@@ -63,4 +63,29 @@ int performOperation(int firstNumber, int secondNumber, char op)
     }
 
     return -1;
+}
+
+int performBoolean(int firstNumber, int secondNumber, char op) 
+{
+    switch (op) 
+    {
+        case '>':
+            return firstNumber > secondNumber;
+        case '<':
+            return firstNumber < secondNumber;
+        case '>=':
+            return firstNumber >= secondNumber;
+        case '<=':
+            return firstNumber <= secondNumber;
+        case '==':
+            return firstNumber == secondNumber;
+        case '!=':
+            return firstNumber != secondNumber;
+        case '&&':
+            return firstNumber && secondNumber;
+        case '||':
+            return firstNumber || secondNumber;
+        default:
+            return -1; 
+    }
 }

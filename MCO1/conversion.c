@@ -7,10 +7,6 @@ int getNextToken(const char* input, int startPos, str256 token){
     int pos = startPos;
     int tokenIndex = 0;
     
-    while (input[pos] == ' ' || input[pos] == '\t') {
-        pos++; //I think this is not needed since nakalagay sa specs na valid yung input string without any whitespaces or whatnot
-    }
-    
     if (input[pos] == '\0') {
         token[0] = '\0';
         return pos;
@@ -60,7 +56,6 @@ int getNextToken(const char* input, int startPos, str256 token){
     
     token[0] = input[pos];
     token[1] = '\0';
-    return pos + 1; // Can be removed since it might take the unexpected characters as a valid input and hide the bugs
 }
 
 int tokenizeInput(const char* input, str256 tokens[], int maxTokens){
@@ -124,16 +119,8 @@ int getPrecedence(str256 operator){
     {
         return 5;
     }
-    else if (strcmp(operator, "(") == 0 || strcmp(operator, ")") == 0)
-    {
-        return 6; 
-    } // can be removed since the open and close parenthesis are just used to signal if it is going to be popped or not
-    
-    return 0; 
-}
 
-bool hasHigherEqualPriority(str256 op1, str256 op2){
-    return getPrecedence(op1) >= getPrecedence(op2); // Di ko ginamit so it can be removed
+    return 0; 
 }
 
 bool isLeftAssociative(str256 operator) {
