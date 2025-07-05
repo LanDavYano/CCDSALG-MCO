@@ -1,5 +1,6 @@
 #include "evaluation.h"
 
+
 int charToInt(char singleDigit)
 {
     if (isdigit(singleDigit))
@@ -65,50 +66,335 @@ int performOperation(int firstNumber, int secondNumber, char op)
     return -1;
 }
 
-int evaluation(Queue *queue, str256 token){
+bool hasZeroDivision(const str256 infixExpression, Queue *postfixResult){
+    str256 tokens[MAX];
+    str256 token;
+    StackOperator stckOprtrt;
+    StackOperand stackOperand;
+
+    createStackOperand(&stackOperand);
+    createStackOperator(&stckOprtrt);
+    createQueue(postfixResult);
+
+    int tokenCount = 0;
+
+    tokenCount = tokenizeInput(infixExpression, tokens, MAX);
+
+    if (readInput(tokens, tokenCount, &stckOprtrt, postfixResult))
+    {
+
+        while(!queueEmpty(postfixResult)){
+
+          if(dequeue(postfixResult, token)){
+                int flagFound = false;
+
+                //check if it is an operator
+                int i = 0;
+                int num_operators = sizeof(operators) / sizeof(operators[0]);
+                while(i < num_operators && flagFound == false){
+                    if(strcmp(operators[i],token) == 0){
+                        flagFound = true;
+                    }
+                    i++;
+                }
+
+                //if current token is an operator
+                if(flagFound == true){
+
+                    if(strcmp(token, "!") == 0) {
+                        //pop only one for ! operator
+                        int operand;
+                        bool pop_result = popOperand(&stackOperand, &operand);
+                        
+                        //if non-zero number + ! will return false
+                        //if zero number + ! it will make it true
+                        int curr_result = (operand == 0) ? 1 : 0;
+                        pushOperand(&stackOperand, curr_result);
+                        
+                    }else{
+
+                        //pop pop from the stack
+                        //then evaluate if numbers in stack is 2 or more
+                        //if it is then evaluate the expression then push to stack
+                        int first_operand, second_operand;
+                        bool first_pop = popOperand(&stackOperand, &first_operand);
+                        bool second_pop = popOperand(&stackOperand, &second_operand);
+                        char current_op = token[0]; 
+
+                        //checks if there is at least two operands from operandStack
+                        if(first_pop && second_pop){
+
+                            int curr_result;
+
+                            //addition
+                            if(strcmp(token, "+") == 0) {
+                                curr_result = second_operand + first_operand;
+                            }
+
+                            //subtraction
+                            else if(strcmp(token, "-") == 0) {
+                                curr_result = second_operand - first_operand;
+                            }
+
+                            //multiplication
+                            else if(strcmp(token, "*") == 0) {
+                                curr_result = second_operand * first_operand;
+                            }
+                            //division
+                            else if(strcmp(token, "/") == 0) {
+                                if(first_operand == 0) {
+                                    return true;
+                                }
+                                curr_result = second_operand / first_operand;
+                            }
+                            //greater than or equal to 
+                            else if(strcmp(token, ">=") == 0) {
+                                curr_result = (second_operand >= first_operand) ? 1 : 0;
+                            }
+                            //less than or qual to 
+                            else if(strcmp(token, "<=") == 0) {
+                                curr_result = (second_operand <= first_operand) ? 1 : 0;
+                            }
+                            //greater than
+                            else if(strcmp(token, ">") == 0) {
+                                curr_result = (second_operand > first_operand) ? 1 : 0;
+                            }
+                            //less than
+                            else if(strcmp(token, "<") == 0) {
+                                curr_result = (second_operand < first_operand) ? 1 : 0;
+                            }
+                            //logical AND
+                            else if(strcmp(token, "&&") == 0) {
+                                curr_result = (second_operand && first_operand) ? 1 : 0;
+                            }
+                            //if there is an error
+                            else {
+                                printf("Unsupported operator: %s\n", token);
+                            }
+
+                            //push evaluated expression to stack
+                            pushOperand(&stackOperand,curr_result);
+                        }
+                    }
+
+                }else{
+
+                    //push operand to stack
+                    int push_num = charToInt(token[0]);
+                    pushOperand(&stackOperand, push_num);
+                }
+
+
+            }
+        }
+
+        return false;
+    }
+}
+
+
+
+int runPostfixtoEvaluation(const str256 infixExpression, Queue *postfixResult){
+    str256 tokens[MAX];
+    str256 token;
+    StackOperator stckOprtrt;
+    StackOperand stackOperand;
+
+    createStackOperand(&stackOperand);
+    createStackOperator(&stckOprtrt);
+    createQueue(postfixResult);
+
+    int tokenCount = 0;
+
+    tokenCount = tokenizeInput(infixExpression, tokens, MAX);
+
+    if (readInput(tokens, tokenCount, &stckOprtrt, postfixResult))
+    {
+
+        while(!queueEmpty(postfixResult)){
+
+            if(dequeue(postfixResult, token)){
+
+                int flagFound = false;
+
+                //check if it is an operator
+                int i = 0;
+                int num_operators = sizeof(operators) / sizeof(operators[0]);
+                while(i < num_operators && flagFound == false){
+                    if(strcmp(operators[i],token) == 0){
+                        flagFound = true;
+                    }
+                    i++;
+                }
+
+                if(flagFound == true){
+
+                    if(strcmp(token, "!") == 0) {
+                        //pop only one for ! operator
+                        int operand;
+                        bool pop_result = popOperand(&stackOperand, &operand);
+                        
+                        if(pop_result) {
+                            //if non-zero number + ! will return false
+                            //if zero number + ! it will make it true
+                            int curr_result = (operand == 0) ? 1 : 0;
+                            pushOperand(&stackOperand, curr_result);
+                        } else {
+                            printf("Error: Not enough operands for !\n");
+                            return -1;
+                        }
+                    }else{
+
+                        //pop pop from the stack
+                        //then evaluate if numbers in stack is 2 or more
+                        //if it is then evaluate the expression then push to stack
+                        int first_operand, second_operand;
+                        bool first_pop = popOperand(&stackOperand, &first_operand);
+                        bool second_pop = popOperand(&stackOperand, &second_operand);
+                        char current_op = token[0]; 
+
+                        if(first_pop && second_pop){
+
+                            int curr_result;
+
+                            if(strcmp(token, "+") == 0) {
+                                curr_result = second_operand + first_operand;
+                            }
+                            else if(strcmp(token, "-") == 0) {
+                                curr_result = second_operand - first_operand;
+                            }
+                            else if(strcmp(token, "*") == 0) {
+                                curr_result = second_operand * first_operand;
+                            }
+                            else if(strcmp(token, "/") == 0) {
+                                if(first_operand == 0) {
+                                    printf("Error: Division by zero\n");
+                                    return 0;
+                                }
+                                curr_result = second_operand / first_operand;
+                            }
+                            else if(strcmp(token, ">=") == 0) {
+                                curr_result = (second_operand >= first_operand) ? 1 : 0;
+                            }
+                            else if(strcmp(token, "<=") == 0) {
+                                curr_result = (second_operand <= first_operand) ? 1 : 0;
+                            }
+                            else if(strcmp(token, ">") == 0) {
+                                curr_result = (second_operand > first_operand) ? 1 : 0;
+                            }
+                            else if(strcmp(token, "<") == 0) {
+                                curr_result = (second_operand < first_operand) ? 1 : 0;
+                            }
+                            else if(strcmp(token, "&&") == 0) {
+                                curr_result = (second_operand && first_operand) ? 1 : 0;
+                            }
+                            else {
+                                printf("Unsupported operator: %s\n", token);
+                            }
+
+                            //printf("CURRENT OP %c",current_op);
+                            //printf("RESULT %d",curr_result);
+                
+                            pushOperand(&stackOperand,curr_result);
+                        }
+                    }
+
+                }else{
+
+                    //push to stack
+                    int push_num = charToInt(token[0]);
+                    pushOperand(&stackOperand, push_num);
+                }
+
+
+            }
+        }
+
+        // After processing all tokens
+
+        int final_result;
+        if(popOperand(&stackOperand, &final_result)) {
+            return final_result;  // Return the result
+        }
+
+
+ 
+        return -1;
+    }
+
+}
+
+bool evaluation(Queue *queue, str256 token){
 
     //local stack OPERAND 
     StackOperand stackOperand;
-    createStackOperator(stackOperand);
+    createStackOperand(&stackOperand);
+    printf("ttt2\n");
+    printf("%s\n", token);
 
     //dequeing and putting into STACK
     if(dequeue(queue, token)){
+        printf("ttt3");
+        printf("%s\n", token);
 
-        for(int i=0;i<token.length;i++){
+        // for(int i=0;i<strlen(token);i++){
 
-            int flagFound = false;
+        //     int flagFound = false;
 
-            //check if it is an operator
-            while(operators && flagFound == false){
-                if(operators[i] == token[i]){
-                    flagFound = true;
-                }
-                int i++;
-            }
+        //     //check if it is an operator
+        //     while(operators && flagFound == false){
+        //         if(operators[i] == token[i]){
+        //             flagFound = true;
+        //         }
+        //         i++;
+        //     }
 
-            if(flagFound == true){
+        //     if(flagFound == true){
 
-                //pop pop from the stack
-                //then evaluate if numbers in stack is 2 or more
-                //if it is then evaluate the expression then push to stack
-                bool first_pop = popOperand(stackOperand, token[i]);
-                bool second_pop = popOperand(stackOperand, token[i+1]);
+        //         //pop pop from the stack
+        //         //then evaluate if numbers in stack is 2 or more
+        //         //if it is then evaluate the expression then push to stack
+        //         bool first_pop = popOperand(&stackOperand, token[i]);
+        //         bool second_pop = popOperand(&stackOperand, token[i+1]);
 
-                if(first_pop && second_pop){
+        //         if(first_pop && second_pop){
 
-                    int left_number = stackOperand[i];
-                    int right_number = stackOperand[i+1];
-                    char current_op = token[i];
-                    char curr_result[20];  // Make sure it's large enough
-                    sprintf(curr_result, "%d%c%d", left_number, current_op, right_number);
-                    pushOperand(stackOperand,curr_result);
-                }
+        //             int left_number = stackOperand.items[i];
+        //             int right_number = stackOperand.items[i + 1];
+        //             char current_op = token[i];
 
-            }else{
-                //push to stack
-                int push_num = charToInt(token[i]);
-                pushOperand(stackOperand, push_num);
-            }
-        }
+        //             int curr_result;
+
+        //             switch (current_op) {
+        //                 case '+':
+        //                     curr_result = left_number + right_number;
+        //                     break;
+        //                 case '-':
+        //                     curr_result = left_number - right_number;
+        //                     break;
+        //                 case '*':
+        //                     curr_result = left_number * right_number;
+        //                     break;
+        //                 case '/':
+        //                     curr_result = left_number / right_number;
+        //                     break;
+        //                 default:
+        //                     printf("Unsupported operator: %c\n", current_op);
+        //                     break;
+        //             }
+
+           
+
+        //             pushOperand(&stackOperand,curr_result);
+        //         }
+
+        //     }else{
+        //         //push to stack
+        //         int push_num = charToInt(token[i]);
+        //         pushOperand(&stackOperand, push_num);
+        //     }
+        // }
+
+        return true;
     }
 }

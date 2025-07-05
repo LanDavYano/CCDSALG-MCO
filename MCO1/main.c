@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include "conversion.h"
+#include "evaluation.h"
 
 int main()
 {
     str256 userInput = "", token = "";
     Queue postfixQueue;
+
+
     bool done = false;
 
     while (!done){
@@ -19,15 +22,16 @@ int main()
                 dequeue(&postfixQueue, token);
                 printf("%s ", token);
             }
-            printf("\n");
-            // 
-            // if (/*runEvaluationOfPostfix*/){
-            //     // Process of Evaluation of Postfix
-            // }
-
-            // else{
-            //     printf("Division by zero error!\n");
-            // }
+            if(!(hasZeroDivision(userInput, &postfixQueue))){
+                int result = runPostfixtoEvaluation(userInput, &postfixQueue);
+                if(result != -1) {
+                    printf("\n%d\n", result);
+                } else {
+                    printf("\nError in evaluation\n");
+                }
+            }else{
+                printf("\nDivision by zero error!\n");
+            }
         }
     }
 

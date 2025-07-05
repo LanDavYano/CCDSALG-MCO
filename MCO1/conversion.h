@@ -7,7 +7,8 @@
 #include "stack.h"
 #include "queue.h"
 
-
+// In conversion.h
+extern const str256 operators[257];
 typedef char str256[257];
 
 bool isOperator(str256 token);
