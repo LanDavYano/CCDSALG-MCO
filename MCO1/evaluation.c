@@ -158,7 +158,7 @@ bool hasZeroDivision(const str256 infixExpression, Queue *postfixResult){
                                 curr_result = pow(second_operand,first_operand);
                             }
 
-                            //RATIONAL OPERATORS
+                            //RELATIONAL OPERATORS
                             //-----------------------
                             //greater than or equal to 
                             else if(strcmp(token, ">=") == 0) {
@@ -317,7 +317,7 @@ int runPostfixtoEvaluation(const str256 infixExpression, Queue *postfixResult){
                                 curr_result = pow(second_operand,first_operand);
                             }
 
-                            //RATIONAL OPERATORS
+                            //RELATIONAL OPERATORS
                             //-----------------------
                             //greater than or equal to 
                             else if(strcmp(token, ">=") == 0) {
