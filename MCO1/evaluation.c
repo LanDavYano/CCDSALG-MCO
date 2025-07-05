@@ -126,6 +126,8 @@ bool hasZeroDivision(const str256 infixExpression, Queue *postfixResult){
 
                             int curr_result;
 
+                            //ARITHMETIC OPERATORS
+                            //-----------------------
                             //addition
                             if(strcmp(token, "+") == 0) {
                                 curr_result = second_operand + first_operand;
@@ -147,6 +149,17 @@ bool hasZeroDivision(const str256 infixExpression, Queue *postfixResult){
                                 }
                                 curr_result = second_operand / first_operand;
                             }
+                            //modulo
+                            else if(strcmp(token, "%") == 0) {
+                                curr_result = second_operand % first_operand ;
+                            }
+                            //power
+                            else if(strcmp(token, "^") == 0) {
+                                curr_result = pow(second_operand,first_operand);
+                            }
+
+                            //RATIONAL OPERATORS
+                            //-----------------------
                             //greater than or equal to 
                             else if(strcmp(token, ">=") == 0) {
                                 curr_result = (second_operand >= first_operand) ? 1 : 0;
@@ -163,10 +176,24 @@ bool hasZeroDivision(const str256 infixExpression, Queue *postfixResult){
                             else if(strcmp(token, "<") == 0) {
                                 curr_result = (second_operand < first_operand) ? 1 : 0;
                             }
-                            //logical AND
+                            //not equals
+                            else if(strcmp(token, "!=") == 0) {
+                                curr_result = (first_operand != second_operand);
+                            }
+                            //equals
+                            else if(strcmp(token, "==") == 0) {
+                                curr_result = (first_operand == second_operand);
+                            }
+
+                            //LOGICAL OPERATORS
+                            //----------------
                             else if(strcmp(token, "&&") == 0) {
                                 curr_result = (second_operand && first_operand) ? 1 : 0;
                             }
+                            else if(strcmp(token, "||") == 0) {
+                                curr_result = (second_operand || first_operand) ? 1 : 0;
+                            }
+
                             //if there is an error
                             else {
                                 printf("Unsupported operator: %s\n", token);
@@ -253,48 +280,84 @@ int runPostfixtoEvaluation(const str256 infixExpression, Queue *postfixResult){
                         bool second_pop = popOperand(&stackOperand, &second_operand);
                         char current_op = token[0]; 
 
+                        //checks if there is at least two operands from operandStack
                         if(first_pop && second_pop){
 
                             int curr_result;
 
+                            //ARITHMETIC OPERATORS
+                            //-----------------------
+                            //addition
                             if(strcmp(token, "+") == 0) {
                                 curr_result = second_operand + first_operand;
                             }
+
+                            //subtraction
                             else if(strcmp(token, "-") == 0) {
                                 curr_result = second_operand - first_operand;
                             }
+
+                            //multiplication
                             else if(strcmp(token, "*") == 0) {
                                 curr_result = second_operand * first_operand;
                             }
+                            //division
                             else if(strcmp(token, "/") == 0) {
                                 if(first_operand == 0) {
-                                    printf("Error: Division by zero\n");
-                                    return 0;
+                                    return -1;
                                 }
                                 curr_result = second_operand / first_operand;
                             }
+                            //modulo
+                            else if(strcmp(token, "%") == 0) {
+                                curr_result = second_operand % first_operand ;
+                            }
+                            //power
+                            else if(strcmp(token, "^") == 0) {
+                                curr_result = pow(second_operand,first_operand);
+                            }
+
+                            //RATIONAL OPERATORS
+                            //-----------------------
+                            //greater than or equal to 
                             else if(strcmp(token, ">=") == 0) {
                                 curr_result = (second_operand >= first_operand) ? 1 : 0;
                             }
+                            //less than or qual to 
                             else if(strcmp(token, "<=") == 0) {
                                 curr_result = (second_operand <= first_operand) ? 1 : 0;
                             }
+                            //greater than
                             else if(strcmp(token, ">") == 0) {
                                 curr_result = (second_operand > first_operand) ? 1 : 0;
                             }
+                            //less than
                             else if(strcmp(token, "<") == 0) {
                                 curr_result = (second_operand < first_operand) ? 1 : 0;
                             }
+                            //not equals
+                            else if(strcmp(token, "!=") == 0) {
+                                curr_result = (first_operand != second_operand);
+                            }
+                            //equals
+                            else if(strcmp(token, "==") == 0) {
+                                curr_result = (first_operand == second_operand);
+                            }
+
+                            //LOGICAL OPERATORS
+                            //----------------
                             else if(strcmp(token, "&&") == 0) {
                                 curr_result = (second_operand && first_operand) ? 1 : 0;
                             }
+                            else if(strcmp(token, "||") == 0) {
+                                curr_result = (second_operand || first_operand) ? 1 : 0;
+                            }
+                            //if there is an error
                             else {
                                 printf("Unsupported operator: %s\n", token);
                             }
 
-                            //printf("CURRENT OP %c",current_op);
-                            //printf("RESULT %d",curr_result);
-                
+                            //push evaluated expression to stack
                             pushOperand(&stackOperand,curr_result);
                         }
                     }

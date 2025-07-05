@@ -7,16 +7,10 @@ int main()
     str256 userInput = "", token = "";
     Queue postfixQueue;
 
-
-    bool done = false;
-
-    while (!done){
-        scanf("%s", userInput);
-
+    while(scanf("%s", userInput) == 1){
         if (strcmp("QUIT", userInput) == 0){
-            done = true;
+            break;
         }
-
         else if (runInfixToPostfix(userInput, &postfixQueue)){
             while (!queueEmpty(&postfixQueue)){
                 dequeue(&postfixQueue, token);
@@ -34,8 +28,6 @@ int main()
             }
         }
     }
-
-    
     
     return 0;
 }
